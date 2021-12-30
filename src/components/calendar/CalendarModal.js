@@ -1,8 +1,12 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { uiCloseModal } from '../../actions/ui';
 import Modal from 'react-modal';
 import DateTimePicker from 'react-datetime-picker';
 import moment from 'moment';
 import Swal from 'sweetalert2';
+
+
 
 const customStyles = {
     content: {
@@ -21,6 +25,10 @@ const endDate = moment().minute(0).seconds(0).add(2,'hour');
 // const endDate = startDate.clone().add(1,'hour');
 
 export const CalendarModal = () => {
+
+    //use selector sirve para estar pendiente del store
+    const { modalOpen } = useSelector( state => state.ui) //ui viene del rootReducer.js
+    const dispatch = useDispatch();     
     const [dateStart, setdateStart] = useState(startDate.toDate());
     const [dateEnd, setdateEnd] = useState( endDate.toDate() );
     const [formValues, setformValues] = useState({
@@ -30,7 +38,7 @@ export const CalendarModal = () => {
         end     : endDate.toDate(),
     })
     const [titleValid, settitleValid] = useState(true);
-    const [isOpen, setisOpen] = useState(true)
+    // const [isOpen, setisOpen] = useState(true) //abrir y cerrar modal
 
     const { title, notes, start, end }  = formValues;
 
@@ -41,8 +49,8 @@ export const CalendarModal = () => {
         })
     }
     const closeModal = () => {
-        setisOpen(false)
         console.log('cerrando ...')
+        dispatch( uiCloseModal() )
     }
     const handleStartDateChange =( e )=>{
         setdateStart( e );
@@ -82,7 +90,7 @@ export const CalendarModal = () => {
     }
     return (
         <Modal
-            isOpen={isOpen}
+            isOpen= { modalOpen }
             // onAfterOpen={afterOpenModal}
             onRequestClose={closeModal}
             style={customStyles}
