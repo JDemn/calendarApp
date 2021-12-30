@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import Modal from 'react-modal';
 import DateTimePicker from 'react-datetime-picker';
 import moment from 'moment';
-
+import Swal from 'sweetalert2';
 
 const customStyles = {
     content: {
@@ -29,9 +29,10 @@ export const CalendarModal = () => {
         start   : startDate.toDate(),
         end     : endDate.toDate(),
     })
+    const [titleValid, settitleValid] = useState(true);
     const [isOpen, setisOpen] = useState(true)
 
-    const { title, notes }  = formValues;
+    const { title, notes, start, end }  = formValues;
 
     const handleInputChange = ({ target })=> {
         setformValues({
@@ -62,7 +63,22 @@ export const CalendarModal = () => {
     }
     const handleSubmitForm =( e )=>{
         e.preventDefault();
-        console.log(formValues)
+        // console.log(formValues)
+        const momentStart = moment( start);
+        const momentEnd = moment(end);
+
+        //validar que las fechas no sean iguales
+        if(momentStart.isSameOrAfter(momentEnd) ){
+            Swal.fire('Error','La fecha fin debe de ser mayor a la fecha de inicio', 'error');
+            return;
+        }
+        if(title.trim().length<2){
+            return settitleValid(false)
+        }
+
+        // TODO Realizar grabación en base de datos
+        settitleValid(true);
+        closeModal();
     }
     return (
         <Modal
@@ -103,7 +119,8 @@ export const CalendarModal = () => {
                     <label>Titulo y notas</label>
                     <input
                         type="text"
-                        className="form-control"
+                        // className = {`form-control ${ titleValid ? 'is-valid': 'is-invalid'}`}
+                        className = { `form-control ${ !titleValid && 'is-invalid'}`}
                         placeholder="Título del evento"
                         name="title"
                         value= { title }
