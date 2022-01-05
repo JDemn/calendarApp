@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { calendarReducer } from './calendarReducer';
 import { uiReducer } from './uiReducer';
 
 //Es la combianación de todos los reducers que tenemos en nuetra app
@@ -6,5 +7,6 @@ import { uiReducer } from './uiReducer';
 
 export const rootReducer = combineReducers({
     //recibe un objeto que indica como va a lucir todo el store
-    ui : uiReducer
+    ui : uiReducer,
+    calendar : calendarReducer
 })

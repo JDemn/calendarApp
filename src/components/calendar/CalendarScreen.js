@@ -8,6 +8,9 @@ import { CalendarEvent } from './CalendarEvent';
 import { CalendarModal } from './CalendarModal';
 import { uiOpenModal } from '../../actions/ui';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+// import { useSelector } from 'react-redux';
+import { eventSetActive } from '../../actions/events';
+import { AddNewFab } from '../ui/AddNewFab';
 
 
 
@@ -30,7 +33,7 @@ const events = [{
 export const CalendarScreen = () => {
     const dispatch = useDispatch();
     const [lastView, setlastView] = useState(localStorage.getItem('lastView') || 'month');
-
+    // const state = useSelector(state => state.calendar);
     //estar pendientes de acciones que van a suceder y reaccionar ante ellas
     const onDoubleClick = (e)=> {
         console.log(e);
@@ -40,6 +43,8 @@ export const CalendarScreen = () => {
 
     const onSelectEvent =(e)=> {
         console.log(e)
+        dispatch(eventSetActive(e));
+        dispatch(uiOpenModal());
     }
     const onViewChange =(e)=> {
         setlastView(e)
@@ -81,7 +86,13 @@ export const CalendarScreen = () => {
                     }
                 }
             />
+            
+            <AddNewFab 
+
+            />
+
             <CalendarModal />
+
         </div>
     )
 }
