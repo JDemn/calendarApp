@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 
 import { Navbar } from '../ui/Navbar';
@@ -8,7 +9,6 @@ import { CalendarEvent } from './CalendarEvent';
 import { CalendarModal } from './CalendarModal';
 import { uiOpenModal } from '../../actions/ui';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-// import { useSelector } from 'react-redux';
 import { eventSetActive } from '../../actions/events';
 import { AddNewFab } from '../ui/AddNewFab';
 
@@ -19,21 +19,22 @@ import { AddNewFab } from '../ui/AddNewFab';
 const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 //manejo de fechas con libreria moment no js
-const events = [{
-    title   : 'Birthday of the boss',
-    start   : moment().toDate(), //manejo de fechas con moment
-    end     : moment().add(2,'hours').toDate(), //este evento se acaba en dos horas 
-    bgcolor : '#fafafa',
-    notes   : 'buy the cupe cake',
-    user    : {
-        _id     : '123',
-        name    : 'José'
-    }
-}]
+// const events = [{
+//     title   : 'Birthday of the boss',
+//     start   : moment().toDate(), //manejo de fechas con moment
+//     end     : moment().add(2,'hours').toDate(), //este evento se acaba en dos horas 
+//     bgcolor : '#fafafa',
+//     notes   : 'buy the cupe cake',
+//     user    : {
+//         _id     : '123',
+//         name    : 'José'
+//     }
+// }]
 export const CalendarScreen = () => {
     const dispatch = useDispatch();
     const [lastView, setlastView] = useState(localStorage.getItem('lastView') || 'month');
-    // const state = useSelector(state => state.calendar);
+    const { events } = useSelector(state => state.calendar);
+    
     //estar pendientes de acciones que van a suceder y reaccionar ante ellas
     const onDoubleClick = (e)=> {
         console.log(e);
@@ -44,7 +45,6 @@ export const CalendarScreen = () => {
     const onSelectEvent =(e)=> {
         console.log(e)
         dispatch(eventSetActive(e));
-        dispatch(uiOpenModal());
     }
     const onViewChange =(e)=> {
         setlastView(e)

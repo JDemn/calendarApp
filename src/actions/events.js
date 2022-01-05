@@ -1,6 +1,6 @@
 import { types } from "../types/types";
 
-export const addAddNew =( event )=> ( {
+export const eventAddNew =( event )=> ( {
     type : types.eventAddNew,
     payload : event,
 })

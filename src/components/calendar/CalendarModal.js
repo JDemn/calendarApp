@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { uiCloseModal } from '../../actions/ui';
+
 import Modal from 'react-modal';
 import DateTimePicker from 'react-datetime-picker';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
-
+import { eventAddNew } from '../../actions/events';
+import { uiCloseModal } from '../../actions/ui';
 
 const customStyles = {
     content: {
@@ -24,6 +25,13 @@ const startDate = moment().minutes(0).seconds(0).add(1,'hour');
 const endDate = moment().minute(0).seconds(0).add(2,'hour');
 // const endDate = startDate.clone().add(1,'hour');
 
+const initEvent = {
+    title   : '',
+    notes   : '',
+    start   : startDate.toDate(),
+    end     : endDate.toDate(),
+}
+
 export const CalendarModal = () => {
 
     //use selector sirve para estar pendiente del store
@@ -31,12 +39,7 @@ export const CalendarModal = () => {
     const dispatch = useDispatch();     
     const [dateStart, setdateStart] = useState(startDate.toDate());
     const [dateEnd, setdateEnd] = useState( endDate.toDate() );
-    const [formValues, setformValues] = useState({
-        title   : 'Evento',
-        notes   : '',
-        start   : startDate.toDate(),
-        end     : endDate.toDate(),
-    })
+    const [formValues, setformValues] = useState( initEvent )
     const [titleValid, settitleValid] = useState(true);
     // const [isOpen, setisOpen] = useState(true) //abrir y cerrar modal
 
@@ -51,6 +54,7 @@ export const CalendarModal = () => {
     const closeModal = () => {
         console.log('cerrando ...')
         dispatch( uiCloseModal() )
+        setformValues ( initEvent )
     }
     const handleStartDateChange =( e )=>{
         setdateStart( e );
@@ -83,8 +87,17 @@ export const CalendarModal = () => {
         if(title.trim().length<2){
             return settitleValid(false)
         }
-
+        
         // TODO Realizar grabación en base de datos
+        dispatch( eventAddNew({
+            ...formValues,
+            id : new Date().getTime(),
+            user : {
+                _id : '123',
+                name : 'Deniz'
+            }
+        }) ); //agregar nuevo evento
+
         settitleValid(true);
         closeModal();
     }
