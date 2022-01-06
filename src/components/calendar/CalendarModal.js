@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Modal from 'react-modal';
@@ -6,7 +6,7 @@ import DateTimePicker from 'react-datetime-picker';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
-import { eventAddNew } from '../../actions/events';
+import { cleanEventActiveNote, eventAddNew } from '../../actions/events';
 import { uiCloseModal } from '../../actions/ui';
 
 const customStyles = {
@@ -35,16 +35,22 @@ const initEvent = {
 export const CalendarModal = () => {
 
     //use selector sirve para estar pendiente del store
-    const { modalOpen } = useSelector( state => state.ui) //ui viene del rootReducer.js
+    const { modalOpen } = useSelector( state => state.ui); //ui viene del rootReducer.js
+    const { activeEvents } = useSelector( state => state.calendar);
     const dispatch = useDispatch();     
     const [dateStart, setdateStart] = useState(startDate.toDate());
     const [dateEnd, setdateEnd] = useState( endDate.toDate() );
-    const [formValues, setformValues] = useState( initEvent )
+    const [formValues, setformValues] = useState( initEvent );
     const [titleValid, settitleValid] = useState(true);
     // const [isOpen, setisOpen] = useState(true) //abrir y cerrar modal
 
     const { title, notes, start, end }  = formValues;
 
+    useEffect(() => {
+        if(activeEvents){
+            setformValues(activeEvents);
+        }
+    }, [activeEvents, setformValues])
     const handleInputChange = ({ target })=> {
         setformValues({
             ...formValues,
@@ -53,8 +59,9 @@ export const CalendarModal = () => {
     }
     const closeModal = () => {
         console.log('cerrando ...')
-        dispatch( uiCloseModal() )
-        setformValues ( initEvent )
+        dispatch( uiCloseModal() );
+        dispatch(cleanEventActiveNote());
+        setformValues ( initEvent );
     }
     const handleStartDateChange =( e )=>{
         setdateStart( e );
