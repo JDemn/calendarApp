@@ -14,3 +14,16 @@ export const eventSetActive =( event )=>(
 )
 
 export const cleanEventActiveNote=()=>({ type : types.cleanEventActiveNote});
+
+export const eventUpdated =( event )=>(
+    { 
+        type : types.eventUpdated,
+        payload : event,
+    }
+);
+
+export const deleteNoteEvent =()=>(
+    {
+        type : types.deleteNoteEvent,
+    }
+);

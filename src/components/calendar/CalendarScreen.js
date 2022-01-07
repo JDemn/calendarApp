@@ -9,8 +9,9 @@ import { CalendarEvent } from './CalendarEvent';
 import { CalendarModal } from './CalendarModal';
 import { uiOpenModal } from '../../actions/ui';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { eventSetActive } from '../../actions/events';
+import { cleanEventActiveNote, eventSetActive } from '../../actions/events';
 import { AddNewFab } from '../ui/AddNewFab';
+import { DeleteEventFab } from '../ui/DeleteEventFab';
 
 
 
@@ -33,7 +34,7 @@ const localizer = momentLocalizer(moment) // or globalizeLocalizer
 export const CalendarScreen = () => {
     const dispatch = useDispatch();
     const [lastView, setlastView] = useState(localStorage.getItem('lastView') || 'month');
-    const { events } = useSelector(state => state.calendar);
+    const { events , activeEvents } = useSelector(state => state.calendar);
     
     //estar pendientes de acciones que van a suceder y reaccionar ante ellas
     const onDoubleClick = (e)=> {
@@ -50,6 +51,10 @@ export const CalendarScreen = () => {
         setlastView(e)
         // console.log(e)
         localStorage.setItem('lastView', e );
+    }
+    const hiddenButtonWhentClickOutsideBoxEvent =(e)=>{
+        // console.log(e);
+        dispatch(cleanEventActiveNote());
     }
     const eventStyleGetter =( event, start, end, isSelected )=>{
         console.log(event, start, end, isSelected);
@@ -78,6 +83,8 @@ export const CalendarScreen = () => {
                 onDoubleClickEvent = { onDoubleClick }
                 onSelectEvent = { onSelectEvent }
                 onView = { onViewChange }
+                onSelectSlot = { hiddenButtonWhentClickOutsideBoxEvent }  //eventos al tocar fuera de cada evento
+                selectable = { true }
                 view = { lastView }
                 //mostrar un componente externo como referencia
                 components={
@@ -87,9 +94,11 @@ export const CalendarScreen = () => {
                 }
             />
             
-            <AddNewFab 
-
-            />
+            <AddNewFab />
+            {
+                activeEvents&& <DeleteEventFab />
+            }
+            
 
             <CalendarModal />
 
